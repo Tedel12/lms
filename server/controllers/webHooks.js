@@ -4,27 +4,31 @@ import User from "../models/User.js";
 //API controller function to manage clerk user with database
 
 export const clerkWebhooks = async (req, res) =>{
+    console.log("réception de webhook clerk")
     try {
         const whook =  new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
-        await whook.verify(JSON.stringify(req.body), {
+        await whook.verify(req.body, {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"],
         })
         
-        const {data, type} = req.body
+        const payload = JSON.parse(req.body);
+
+        const {data, type} = payload;
+
+        console.log("webhook type:", type)
 
         switch(type) {
             case 'user.created': {
                 const userData = {
                     _id: data.id,
-                    email: data.email_address[0].email_address,
+                    email: data.email_addresses[0].email_address,
                     name: data.first_name + " " + data.last_name,
                     imageUrl: data.image_url,
                 }
                 await User.create(userData)
-                res.json({})
                 break;
             }
 
@@ -35,21 +39,22 @@ export const clerkWebhooks = async (req, res) =>{
                     imageUrl: data.image_url,
                 }
                 await User.findByIdAndUpdate(data.id, userData)
-                res.json({})
                 break;
             }
             
             case 'user.deleted' : {
                 await User.findByIdAndDelete(data.id)
-                res.json({})
                 break;
             }
 
             default:
-                break;
+                console.log('web hook non pris en charge')
         }
 
+        res.status(200).send("OK");
+
     } catch (error) {
+        console.error("erreur webhook clerk:", error.message)
         res.json({
             success: false,
             message: error.message
