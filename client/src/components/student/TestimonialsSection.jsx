@@ -4,8 +4,8 @@ import { assets, dummyTestimonial } from '../../assets/assets'
 const TestimonialsSection = () => {
   return (
     <div className='pb-14 px-8 md:px-8'>
-      <h2 className='text-3xl font-semibold text-gray-800'>Testimonials</h2>
-      <p className='md:text-base'>Hear from our learners as they share their journeys of transformation success, and how our <br />platform has made a difference in their lives.</p>
+      <h2 className='text-3xl font-semibold text-gray-800'>Ce qu'on dit de nous ?</h2>
+      <p className='md:text-base'>Ecoutez nos apprenants qui partagent leurs parcours de transformation et comment notre <br />plateforme a fait une différence dans leur vie.</p>
       <div className='grid grid-cols-auto gap-8 mt-14'>
         {dummyTestimonial.map((testimonial, index)=>(
           <div key={index} className='text-sm text-left border border-gray-500/30 pb-6 rounded-lg bg-white shadow-[0px_3px_5px_0px] shadow-black/50 overflow-hidden'>
