@@ -10,8 +10,9 @@ const Sidebar = () => {
   const menuItems = [
     {name: 'Dashboard', path: '/educator', icon: assets.home_icon},
     {name: 'Ajouter un cours', path: '/educator/add-course', icon: assets.add_icon},
-    {name: 'Les Courses', path: '/educator/my-courses', icon: assets.my_course_icon},
+    {name: 'Mes Courses', path: '/educator/my-courses', icon: assets.my_course_icon},
     {name: 'Inscriptions', path: '/educator/student-enrolled', icon: assets.person_tick_icon},
+    {name: 'QCMs', path: '/educator/qcms', icon: assets.add_icon},
   ]
 
   return isEducator && (

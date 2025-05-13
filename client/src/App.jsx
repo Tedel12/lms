@@ -14,6 +14,7 @@ import StudentsEnrolled from './pages/educator/StudentsEnrolled'
 import Navbar from './components/student/Navbar'
 import "quill/dist/quill.snow.css";
 import { ToastContainer, toast } from 'react-toastify';
+import AddQuizForm from './pages/educator/AddQuizForm'
 
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
           <Route path='add-course' element={<AddCourse/>} />
           <Route path='my-courses' element={<MyCourses/>} />
           <Route path='student-enrolled' element={<StudentsEnrolled/>} />
+          <Route path='qcms' element={<AddQuizForm/>} />
         </Route>
       </Routes>
     </div>
