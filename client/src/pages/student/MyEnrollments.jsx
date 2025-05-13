@@ -13,10 +13,11 @@ const MyEnrollments = () => {
 
   const getCourseProgress = async () =>{
     try {
-      const token = getToken();
+      const token = await getToken();
       const tempProgressArray = await Promise.all(
         enrolledCourses.map(async (course) => {
-          const {data} = await axios.post(`${backendUrl}/api/user/get-course-progress`, {courseId: course._id}, {headers: {Authorization: `Bearer ${token}`}})
+          const {data} = await axios.post(backendUrl + '/api/user/get-course-progress', {courseId: course._id}, {headers: {Authorization: `Bearer ${token}`}})
+          console.log(course._id)
 
           let totalLectures = calculateNoOfLectures(course);
 
@@ -50,14 +51,14 @@ const MyEnrollments = () => {
   return (
     <>
       <div className='md:px-36 px-8 pt-10'>
-        <h1 className='text-2xl font-semibold'>My Enrollments</h1>
+        <h1 className='text-2xl font-semibold'>Mes inscriptions</h1>
         <table className='md:table-auto table-fixed w-full overflow-hidden border mt-10'>
           <thead className='text-gray-900 border-b border-r-gray-500/20 text-sm text-left max-sm:hidden'>
             <tr>
-              <th className='px-4 py-3 font-semibold truncate'>Course</th>
-              <th className='px-4 py-3 font-semibold truncate'>Duration</th>
-              <th className='px-4 py-3 font-semibold truncate'>Completed</th>
-              <th className='px-4 py-3 font-semibold truncate'>Status</th>
+              <th className='px-4 py-3 font-semibold truncate'>Cours</th>
+              <th className='px-4 py-3 font-semibold truncate'>Durée</th>
+              <th className='px-4 py-3 font-semibold truncate'>Complété</th>
+              <th className='px-4 py-3 font-semibold truncate'>Statut</th>
             </tr>
           </thead>
           <tbody className='text-gray-700'>
@@ -78,7 +79,7 @@ const MyEnrollments = () => {
                 </td>
                 <td className='px-4 py-3 max-sm:text-right'>
                   <button className='px-3 sm:px-5 py-1.5 sm:py-2 bg-blue-600 max-sm:text-xs text-white rounded-sm' onClick={()=>navigate('/player/' + course._id)}>
-                    {progressArray[index] && progressArray[index].lectureCompleted / progressArray[index].totalLectures === 1 ? 'Completed' : 'On Going'}
+                    {progressArray[index] && progressArray[index].lectureCompleted / progressArray[index].totalLectures === 1 ? 'Terminé' : 'En cours'}
                   </button>
                 </td>
               </tr>

@@ -107,21 +107,21 @@ export const dummyTestimonial = [
         role: 'SWE 1 @ Amazon',
         image: assets.profile_img_1,
         rating: 5,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'J\'utilise ce site depuis sa création, principalement pour mes apprentissages, et il est incroyablement convivial, ce qui rend mon travail beaucoup plus facile.',
     },
     {
         name: 'Richard Nelson',
         role: 'SWE 2 @ Samsung',
         image: assets.profile_img_2,
         rating: 4,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'J\'utilise ce site depuis sa création, principalement pour mes apprentissages, et il est incroyablement convivial, ce qui rend mon travail beaucoup plus facile.',
     },
     {
         name: 'James Washington',
         role: 'SWE 2 @ Google',
         image: assets.profile_img_3,
         rating: 4.5,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'J\'utilise ce site depuis sa création, principalement pour mes apprentissages, et il est incroyablement convivial, ce qui rend mon travail beaucoup plus facile.',
     },
 ];
 

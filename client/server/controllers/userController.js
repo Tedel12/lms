@@ -114,7 +114,7 @@ export const updateUserCourseProgress = async (req, res) => {
             await progressData.save()
         } else{
             await CourseProgress.create({
-                userId, courseId, lectureCompleted: [lectureId], completed: true
+                userId, courseId, lectureCompleted: [lectureId]
             })
         }
         res.json({success: true, message: 'La progression a été mise à jour avec succès'})
@@ -128,7 +128,7 @@ export const getUserCourseProgress = async (req, res) => {
     try {
         const userId = req.auth.userId
         const { courseId } = req.body
-        const progressData = await CourseProgress.findOne({userId, courseId})
+        const progressData = await Purchase.findOne({userId, courseId})
         res.json({success: true, progressData})
     } catch (error) {
         res.json({success: false, message: error.message})
@@ -166,7 +166,7 @@ export const addUserRating = async (req, res) =>{
         }
         await course.save();
 
-        return res.json({success: true, message: "Note ajouté avec succès, merci pour votre avis !"})
+        return res.json({succes: true, message: "Not ajouté avec succès, merci pour votre avis !"})
     } catch (error) {
         res.json({success: false, message: error.message})
     }

@@ -14,7 +14,7 @@ const Navbar = () => {
         <img src={assets.logo} alt="logo" className='w-28 lg:w-32' />
       </Link>
       <div className='flex items-center gap-5 text-gray-500 relative'>
-        <p>Hi! {user ? user.fullName : 'Developpers'}</p>
+        <p>Bonjour ! {user ? user.fullName : 'Developpers'}</p>
         {user ? <UserButton/> : <img src={assets.profile_img} className='max-w-8' alt="profile" /> }
       </div>
     </div>

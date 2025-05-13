@@ -101,14 +101,14 @@ const CourseDetails = () => {
               <img key={i} src={i < Math.floor(calculateRating(courseData)) ? assets.star : assets.star_blank} alt="" className='w-3.5 h-3.5' />
             ))}
           </div>
-          <p className='text-blue-600'>({courseData.courseRatings.length} {courseData.courseRatings.length > 1 ? 'ratings' : 'rating'}) </p>
-          <p>{courseData.enrolledStudents.length} {courseData.enrolledStudents.length > 1 ? 'students' :  'student'}</p>
+          <p className='text-blue-600'>({courseData.courseRatings.length} {courseData.courseRatings.length > 1 ? 'notes' : 'note'}) </p>
+          <p>{courseData.enrolledStudents.length} {courseData.enrolledStudents.length > 1 ? 'étudiants' :  'étudiant'}</p>
         </div>
 
-        <p className='text-sm'>Course by <span className='text-blue-600 underline'>{courseData.educator.name}</span></p>
+        <p className='text-sm'>Présenté par <span className='text-blue-600 underline'>{courseData.educator?.name}</span></p>
 
         <div className="pt-8 text-gray-800">
-          <h2 className='text-xl font-semibold'>Course Structure</h2>
+          <h2 className='text-xl font-semibold'>Structure du cours</h2>
 
           <div className="pt-5">
             {courseData.courseContent.map((chapter, index)=>(
@@ -133,7 +133,7 @@ const CourseDetails = () => {
                             onClick={()=>setPlayerData({
                               videoId: lecture.lectureUrl.split('/').pop()
                             })}
-                            className='text-blue-500 cursor-pointer'>Preview</p> }
+                            className='text-blue-500 cursor-pointer'>Aperçu</p> }
                             <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units: ["h", "m"]})}</p>
                           </div>
                         </div>
@@ -148,7 +148,7 @@ const CourseDetails = () => {
         </div>
               
         <div className='py-20 text-sm md:text-default'>
-          <h3 className='text-xl font-semibold text-gray-800'>Course Description</h3>
+          <h3 className='text-xl font-semibold text-gray-800'>Description du cours</h3>
           <p className='pt-3 rich-text' dangerouslySetInnerHTML={{__html: courseData.courseDescription}}></p>
         </div>
 
@@ -162,9 +162,10 @@ const CourseDetails = () => {
         }
            
         <div className="p-5">
+          
           <div className='flex items-center gap-3'>
             <img className='w-3.5' src={assets.time_left_clock_icon} alt="time" />
-            <p className='text-red-500'><span className='font-medium'>5 days</span> left at this price</p>
+            <p className='text-red-500'><span className='font-medium'>Encore</span> à ce prix</p>
           </div>
 
           <div className='flex gap-3 items-center pt-2'>
@@ -189,7 +190,7 @@ const CourseDetails = () => {
 
               <div className='flex items-center gap-1'>
                 <img src={assets.lesson_icon} alt="time icon" />
-                <p>{calculateNoOfLectures(courseData)} lessons</p>
+                <p>{calculateNoOfLectures(courseData)} leçcons</p>
               </div>
 
             </div>
@@ -197,13 +198,13 @@ const CourseDetails = () => {
             <button onClick={enrollCourse} className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium'>{isAlreadyEnrolled ? 'Déjà inscrit' : "S'inscrire"}</button>
 
             <div className='pt-6 text-gray-600'>
-              <p className='md:text-xl text-lg font-medium text-gray-800'>What's in the course ?</p>
+              <p className='md:text-xl text-lg font-medium text-gray-800'>Que contient le cours ?</p>
               <ul className='ml-4 pt-2 text-sm md:text-default list-disc'>
-                <li>Lifetime access with free updates.</li>
-                <li>Step-by-step, hands-on project guidance.</li>
-                <li>Downloadable ressources and source code.</li>
-                <li>Quizes to test your knowledge.</li>
-                <li>Certificate of completion.</li>
+                <li>Accès à vie avec mises à jour gratuites.</li>
+                <li>Guide pratique et étape par étape pour vos projets.</li>
+                <li>Ressources et code source téléchargeables.</li>
+                <li>Questions pour tester vos connaissances.</li>
+                <li>Certificat de réussite.</li>
               </ul>
             </div>
         </div>
