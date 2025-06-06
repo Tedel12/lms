@@ -13,6 +13,7 @@ const Sidebar = () => {
     {name: 'Mes Courses', path: '/educator/my-courses', icon: assets.my_course_icon},
     {name: 'Inscriptions', path: '/educator/student-enrolled', icon: assets.person_tick_icon},
     {name: 'QCMs', path: '/educator/qcms', icon: assets.add_icon},
+    {name: 'Les Certificats', path: '/educator/certificats', icon: assets.my_course_icon},
   ]
 
   return isEducator && (

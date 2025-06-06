@@ -1,5 +1,5 @@
-import logo from './logo.svg'
-import logo_dark from './logo_dark.svg'
+import logo from './logo.png'
+import logo_footer from './logo-footer.png'
 import search_icon from './search_icon.svg'
 import cross_icon from './cross_icon.svg'
 import upload_area from './upload_area.svg'
@@ -66,7 +66,7 @@ export const assets = {
     dropdown_icon,
     cross_icon,
     upload_area,
-    logo_dark,
+    logo_footer,
     down_arrow_icon,
     time_left_clock_icon,
     time_clock_icon,

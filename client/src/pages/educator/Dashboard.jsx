@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 
 const Dashboard = () => {
 
-  const {currency, backendUrl, isEducator, getToken} = useContext(AppContext)
+  const {currency, backendUrl, isEducator, getToken, userData} = useContext(AppContext)
   const [dashboardData, setDashboardData] = useState(null)
 
   const fetchDashboardData = async () => {
@@ -76,7 +76,7 @@ const Dashboard = () => {
                     <td className='px-4 py-3 text-center hidden sm:table-cell'>{index + 1}</td>
                     <td className='md:px-4 px-2 py-3 flex items-center space-x-3'>
                       <img src={item.student.imageUrl} alt="profile" className='w-9 h-9 rounded-full'/>
-                      <span className='truncate'>{item.student.name}</span>
+                      <span className='truncate'>{userData.name || userData.email}</span>
                     </td>
                     <td className='px-4 py-3 truncate'>{item.courseTitle}</td>
                   </tr>

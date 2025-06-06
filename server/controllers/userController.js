@@ -2,6 +2,10 @@ import Course from "../models/Course.js"
 import { CourseProgress } from "../models/CourseProgress.js"
 import { Purchase } from "../models/Purchase.js"
 import User from "../models/User.js"
+import Project from '../models/Project.js';
+import { QuizResult } from '../models/QuizResult.js';
+import multer from 'multer';
+import path from 'path';
 
 //get user data
 export const getUserData = async (req, res) =>{
@@ -171,3 +175,105 @@ export const addUserRating = async (req, res) =>{
         res.json({success: false, message: error.message})
     }
 }
+
+
+
+
+// Configuration de multer pour gérer les uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Dossier où stocker les fichiers
+  },
+  filename: (req, file, cb) => {
+    cb(null,` ${Date.now()}-${file.originalname}`); // Nom unique pour le fichier
+  }
+});
+
+
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+      const filetypes = /pdf|zip/;
+      const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+      const mimetype = filetypes.test(file.mimetype);
+      if (extname && mimetype) {
+        return cb(null, true);
+      } else {
+        cb(new Error('Seuls les fichiers PDF et ZIP sont autorisés'));
+      }
+    },
+    limits: { fileSize: 10 * 1024 * 1024 } // Limite de 10MB
+  }).single('file');
+  
+
+
+// Soumettre un projet (étudiant)
+export const submitProject = async (req, res) => {
+    try {
+      // Gérer l'upload du fichier avec multer
+      upload(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ error: err.message });
+        }
+  
+        const { courseId, link } = req.body;
+        const userId = req.auth.userId;
+  
+        // Vérifier les données
+        if (!courseId) {
+          return res.status(400).json({ error: 'courseId requis' });
+        }
+  
+        if (!req.file && !link) {
+          return res.status(400).json({ error: 'Un fichier ou un lien est requis' });
+        }
+  
+        if (req.file && link) {
+          return res.status(400).json({ error: 'Vous ne pouvez pas soumettre un fichier et un lien en même temps' });
+        }
+  
+        const existingProject = await Project.findOne({ userId, courseId });
+        if (existingProject) {
+          return res.status(400).json({ error: 'Projet déjà soumis pour ce cours' });
+        }
+  
+        const project = new Project({
+          userId,
+          courseId,
+          submission: req.file ? `/uploads/${req.file.filename}` : link,
+          submissionType: req.file ? 'file' : 'link'
+        });
+        await project.save();
+  
+        res.json({ message: 'Projet soumis avec succès' });
+      });
+    } catch (error) {
+      console.error('Submit project error:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  };
+
+  // Récupérer les projets de l’utilisateur (étudiant)
+export const getUserProjects = async (req, res) => {
+    try {
+      const userId = req.auth.userId;
+      const projects = await Project.find({ userId }).populate('courseId', 'courseTitle');
+  
+      const formattedProjects = projects.map(project => ({
+        projectId: project._id,
+        userId: project.userId,
+        courseId: project.courseId._id,
+        courseTitle: project.courseId?.courseTitle || 'Cours inconnu',
+        submission: project.submission,
+        submissionType: project.submissionType,
+        submittedAt: project.submittedAt,
+        isValidatedByEducator: project.isValidatedByEducator,
+        validatedAt: project.validatedAt
+      }));
+  
+      res.json(formattedProjects);
+    } catch (error) {
+      console.error('Get user projects error:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  };

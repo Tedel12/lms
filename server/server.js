@@ -9,12 +9,17 @@ import connectCloudianry from './configs/cloudinary.js'
 import courseRouter from './routes/courseRoute.js'
 import userRouter from './routes/userRoutes.js'
 import router from './routes/quizRoutes.js'
+import Certificaterouter from './routes/certificateRoutes.js'
+import path from 'path'
 
 const app = express()
 
 // Middlewares
 app.use(cors())
 app.use(express.json()) // important pour les POST
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 app.use(clerkMiddleware())
 
 // Routes
@@ -24,6 +29,8 @@ app.use('/api/educator', educatorRouter)
 app.use('/api/course', courseRouter)
 app.use('/api/user', userRouter)
 app.use('/api/quiz', router)
+app.use('/api/certificate', Certificaterouter)
+
 
 // Connexion DB
 connectDB()

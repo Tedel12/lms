@@ -117,7 +117,7 @@ const Player = () => {
                     <img className={`transform transition-transform ${openSections[index] ? 'rotate-180' :  ''}`} src={assets.down_arrow_icon} alt="arrow icon" />
                     <p className='font-semibold md:text-base text-sm'>{chapter.chapterTitle}</p>
                   </div>
-                  <p className='text-sm md:text-default'>{chapter.chapterContent.length} lectures - {calculateChapterTime(chapter)}</p>
+                  <p className='text-sm md:text-default'>{chapter.chapterContent.length } {chapter.chapterContent.length === 1 ? 'lecture' : 'lectures' } - {calculateChapterTime(chapter)}</p>
                 </div>
 
                 <div className={`overflow-hidden translate-all duration-300 ${openSections[index] ? 'max-h-96' : 'max-h-0'} `}>
@@ -132,7 +132,7 @@ const Player = () => {
                             onClick={()=>setPlayerData({
                               ...lecture, chapter: index + 1, lecture: i + 1
                             })}
-                            className='text-blue-500 cursor-pointer'>Watch</p> }
+                            className='text-blue-500 cursor-pointer'>Regarder</p> }
                             <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units: ["h", "m"]})}</p>
                           </div>
                         </div>

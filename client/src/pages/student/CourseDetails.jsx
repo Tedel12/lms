@@ -90,7 +90,7 @@ const CourseDetails = () => {
       {/* left column */}
       <div className='max-w-xl z-10 text-gray-500'>
         <h1 className='md:text-course-deatails-heading-large text-course-deatails-heading-small font-semibold text-gray-800'>{courseData.courseTitle}</h1>
-        <p className='pt-4 md:text-base text-sm' dangerouslySetInnerHTML={{__html: courseData.courseDescription.slice(0, 200)}}></p>
+        <p className='pt-4 md:text-base text-sm' dangerouslySetInnerHTML={{__html: courseData.courseDescription.slice(0, 600)}}></p>
 
         {/* review and ratings */}
 
@@ -118,7 +118,7 @@ const CourseDetails = () => {
                     <img className={`transform transition-transform ${openSections[index] ? 'rotate-180' :  ''}`} src={assets.down_arrow_icon} alt="arrow icon" />
                     <p className='font-semibold md:text-base text-sm'>{chapter.chapterTitle}</p>
                   </div>
-                  <p className='text-sm md:text-default'>{chapter.chapterContent.length} lectures - {calculateChapterTime(chapter)}</p>
+                  <p className='text-sm md:text-default'>{chapter.chapterContent.length } {chapter.chapterContent.length === 1 ? 'lecture' : 'lectures' }  - {calculateChapterTime(chapter)}</p>
                 </div>
 
                 <div className={`overflow-hidden translate-all duration-300 ${openSections[index] ? 'max-h-96' : 'max-h-0'} `}>
@@ -158,20 +158,22 @@ const CourseDetails = () => {
       <div className='max-w-course-card z-10 shadow-custom-card rounded-t md:rounded-none overflow-hidden bg-white min-w-[300px] sm:min-w-[420px]'>
         {
           playerData ? <YouTube videoId={playerData.videoId} opts={{playerVars: {autoplay: 1}}} iframeClassName='w-full aspect-video' />
-          :  <img src={courseData.courseThumbnail} alt="thumbnail" />
+          :  <img style={{width : '100%'}} src={courseData.courseThumbnail} alt="thumbnail" />
         }
            
         <div className="p-5">
           
-          <div className='flex items-center gap-3'>
+          {
+            courseData.coursePrice !== 0 ? <div className='flex items-center gap-3'>
             <img className='w-3.5' src={assets.time_left_clock_icon} alt="time" />
             <p className='text-red-500'><span className='font-medium'>Encore</span> à ce prix</p>
-          </div>
+          </div> : ''
+          }
 
           <div className='flex gap-3 items-center pt-2'>
-            <p className='text-gray-800 md:text-3xl text-2xl font-semibold'>{(courseData.coursePrice  - courseData.discount * courseData.coursePrice / 100).toFixed(2)} {currency}</p>
-            <p className='md:text-lg text-gray-500 line-through'>{courseData.coursePrice} {currency}</p>
-            <p className='md:text-lg text-gray-500'>{courseData.discount}% off</p>
+            <p className='text-gray-800 md:text-3xl text-2xl font-semibold'>{courseData.coursePrice === 0 ? 'Gratuit' : (courseData.coursePrice  - courseData.discount * courseData.coursePrice / 100).toFixed(2)} {courseData.coursePrice !== 0 ? currency : ''}</p>
+            <p className='md:text-lg text-gray-500 line-through'>{courseData.coursePrice === 0 ? '': courseData.coursePrice} {courseData.coursePrice === 0 ? '' : currency}</p>
+            <p className='md:text-lg text-gray-500'>{courseData.coursePrice === 0 ? '' : courseData.discount} {courseData.coursePrice !== 0 ? '% off' : ''} </p>
           </div>
 
             <div className='flex items-center text-sm md:text-default gap-4 pt-2 md:pt-4 text-gray-500'>
@@ -190,7 +192,7 @@ const CourseDetails = () => {
 
               <div className='flex items-center gap-1'>
                 <img src={assets.lesson_icon} alt="time icon" />
-                <p>{calculateNoOfLectures(courseData)} leçcons</p>
+                <p>{calculateNoOfLectures(courseData)} leçons</p>
               </div>
 
             </div>

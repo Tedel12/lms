@@ -3,6 +3,92 @@ import Course from '../models/Course.js'
 import {v2 as cloudinary} from 'cloudinary'
 import { Purchase } from '../models/Purchase.js'
 import User from '../models/User.js'
+import { QuizResult } from '../models/QuizResult.js';
+import Project from '../models/Project.js'
+import fs from 'fs'
+
+
+
+// Récupérer le nom d’un étudiant depuis la base de données
+const getStudentName = async (userId) => {
+  try {
+    const user = await User.findOne({ userId });
+    return user?.name || user?.email || `Étudiant ${userId}`;
+  } catch (error) {
+    console.error('Erreur récupération nom étudiant:', error);
+    return `Étudiant ${userId}`;
+  }
+};
+
+
+// Lister les certificats en attente de validation
+export const getPendingCertificates = async (req, res) => {
+  try {
+    const pendingCertificates = await QuizResult.find({
+      score: 100,
+      isValidatedByEducator: false
+    }).populate('courseId', 'courseTitle'); // Assure-toi que courseTitle est bien défini
+
+    const certificates = await Promise.all(
+      pendingCertificates.map(async (quizResult) => {
+        const studentName = await getStudentName(req.auth.userId);
+        return {
+          quizResultId: quizResult._id,
+          userId: quizResult.userId,
+          courseId: quizResult.courseId,
+          courseTitle: quizResult.courseId?.courseTitle, // À vérifier
+          completedAt: quizResult.completedAt,
+          studentName
+        };
+      })
+    );
+
+    res.json(certificates);
+  } catch (error) {
+    console.error('Get pending certificates error:', {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+
+
+// Valider un certificat
+export const validateCertificate = async (req, res) => {
+  try {
+    const { quizResultId } = req.body;
+   
+
+    if (!quizResultId) {
+      return res.status(400).json({ error: 'quizResultId requis' });
+    }
+
+    const quizResult = await QuizResult.findById(quizResultId);
+    if (!quizResult) {
+      return res.status(404).json({ error: 'Résultat de QCM non trouvé' });
+    }
+
+    if (quizResult.score !== 100) {
+      return res.status(400).json({ error: 'Le score doit être de 100% pour valider' });
+    }
+
+    quizResult.isValidatedByEducator = true;
+    await quizResult.save();
+ 
+
+    res.json({ message: 'QCM validé avec succès' });
+  } catch (error) {
+    console.error('Validate certificate error:', {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+
 
 
 // update role to educator
@@ -136,3 +222,91 @@ export const getEnrolledStudentsData = async (req, res) => {
         res.json({success: false,  message: error.message})
     }
 }
+
+
+
+// Lister les projets en attente (éducateur)
+export const getPendingProjects = async (req, res) => {
+  try {
+    const projects = await Project.find({ isValidatedByEducator: false }).populate('courseId', 'courseTitle');
+
+    const formattedProjects = await Promise.all(
+      projects.map(async (project) => {
+        const studentName = await getStudentName(project.userId);
+        const quizResult = await QuizResult.findOne({
+          userId: project.userId,
+          courseId: project.courseId,
+          score: 100,
+          isValidatedByEducator: true
+        });
+
+        const course = await Course.findById(project.courseId);
+        return {
+          projectId: project._id,
+          userId: project.userId,
+          courseId: project.courseId,
+          courseTitle: course ? course.courseTitle : 'Cours inconnu',
+          submission: project.submission,
+          submissionType: project.submissionType,
+          submittedAt: project.submittedAt,
+          studentName,
+          quizValidated: !!quizResult,
+          isValidatedByEducator: project.isValidatedByEducator
+        };
+      })
+    );
+
+    res.json(formattedProjects);
+  } catch (error) {
+    console.error('Get projects error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+
+// Valider un projet (éducateur)
+export const validateProject = async (req, res) => {
+  try {
+    const { projectId } = req.body;
+
+    if (!projectId) {
+      return res.status(400).json({ error: 'projectId requis' });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(404).json({ error: 'Projet non trouvé' });
+    }
+
+    project.isValidatedByEducator = true;
+    project.validatedAt = new Date();
+    await project.save();
+
+    res.json({ message: 'Projet validé avec succès' });
+  } catch (error) {
+    console.error('Validate project error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+
+//supprimer les projets
+export const deleteProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: 'Projet non trouvé' });
+    }
+
+    // Supprimer le fichier associé si c’est un upload
+    
+
+    await Project.findByIdAndDelete(projectId);
+    res.json({ message: 'Projet supprimé avec succès' });
+  } catch (error) {
+    console.error('Delete project error:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};

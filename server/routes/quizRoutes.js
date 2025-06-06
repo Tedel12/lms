@@ -14,6 +14,8 @@ const router = express.Router();
 //   req.user = { _id: 'userIdFromToken' }; // Remplace par ton décodage du token
 //   next();
 // };
+
+
 // Ajouter ou modifier un QCM
 router.post('/create', protectEducator, async (req, res) => {
     try {
@@ -124,10 +126,23 @@ router.post('/submit', async (req, res) => {
     const score = (correctAnswers / quiz.questions.length) * 100;
 
 
+    const updateData = {
+      userId,
+      courseId,
+      answers,
+      score,
+      isValidatedByEducator: false
+    }
+
+    if (score === 100) {
+      updateData.completedAt = new Date();
+    }
+
+
     // Mettre à jour ou créer le QuizResult
     const quizResult = await QuizResult.findOneAndUpdate(
       { userId, courseId }, // Recherche par userId et courseId
-      { userId, courseId, answers, score }, // Mise à jour des champs
+      updateData,         // Mise à jour des champs
       { upsert: true, new: true } // Créer si n'existe pas, retourner le document mis à jour
     );
    
@@ -166,7 +181,9 @@ router.post('/result', async (req, res) => {
 
     res.json({
       hasPassed: !!quizResult,
-      score: quizResult ? quizResult.score : null
+      score: quizResult ? quizResult.score : null,
+      completedAt: quizResult ?  quizResult.completedAt : null,
+      isValidatedByEducator: quizResult ? quizResult.isValidatedByEducator : false
     });
   } catch (error) {
     console.error('Check quiz result error:', {
